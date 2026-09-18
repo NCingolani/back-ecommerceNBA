@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/carrito")
+@RequestMapping("/api/carrito/{usuarioId}")
 public class CarritoController {
 
     private final CarritoService carritoService;
@@ -17,7 +17,7 @@ public class CarritoController {
     }
 
 
-    @GetMapping("/{usuarioId}")
+    @GetMapping
     public ResponseEntity<Carrito> obtenerCarrito(
             @PathVariable Long usuarioId
     ) {
@@ -28,7 +28,7 @@ public class CarritoController {
     }
 
 
-    @PostMapping("/{usuarioId}/producto/{productoId}")
+    @PostMapping("/producto/{productoId}")
     public ResponseEntity<Carrito> agregarProducto(
             @PathVariable Long usuarioId,
             @PathVariable Long productoId,
@@ -45,7 +45,7 @@ public class CarritoController {
     }
 
 
-    @DeleteMapping("/{usuarioId}/producto/{productoId}")
+    @DeleteMapping("/producto/{productoId}")
     public ResponseEntity<Carrito> eliminarProducto(
             @PathVariable Long usuarioId,
             @PathVariable Long productoId

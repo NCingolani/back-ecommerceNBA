@@ -1,13 +1,18 @@
 package com.api.ecommerce.controller;
  
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.api.ecommerce.model.Wishlist;
 import com.api.ecommerce.service.WishlistService;
  
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
- 
 @RestController
-@RequestMapping("/api/wishlist")
+@RequestMapping("/api/wishlist/{usuarioId}")
 public class WishlistController {
  
     private final WishlistService wishlistService;
@@ -17,7 +22,7 @@ public class WishlistController {
     }
  
  
-    @GetMapping("/{usuarioId}")
+    @GetMapping
     public ResponseEntity<Wishlist> obtenerWishlist(
             @PathVariable Long usuarioId
     ) {
@@ -28,7 +33,7 @@ public class WishlistController {
     }
  
  
-    @PostMapping("/{usuarioId}/producto/{productoId}")
+    @PostMapping("/producto/{productoId}")
     public ResponseEntity<Wishlist> agregarProducto(
             @PathVariable Long usuarioId,
             @PathVariable Long productoId
@@ -43,7 +48,7 @@ public class WishlistController {
     }
  
  
-    @DeleteMapping("/{usuarioId}/producto/{productoId}")
+    @DeleteMapping("/producto/{productoId}")
     public ResponseEntity<Wishlist> eliminarProducto(
             @PathVariable Long usuarioId,
             @PathVariable Long productoId
