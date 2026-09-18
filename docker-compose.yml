@@ -15,5 +15,19 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  backend:
+    build: .
+    container_name: nba_ecommerce_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # Pisan la configuración del application.properties para usar "db" en lugar de "localhost"
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/nba_ecommerce?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=nba_user
+      - SPRING_DATASOURCE_PASSWORD=nba_password
+    depends_on:
+      - db
+
 volumes:
   db_data:
