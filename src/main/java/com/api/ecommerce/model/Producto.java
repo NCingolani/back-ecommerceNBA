@@ -1,9 +1,18 @@
 package com.api.ecommerce.model;
 
-import jakarta.persistence.*;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Entity
 @Table(name = "productos")
@@ -15,6 +24,8 @@ public class Producto {
     private Long id;
     private String nombre;
     private Double precio;
+    private String talle;
+    private Integer stock; // Usamos Integer para manejar cantidades enteras
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")

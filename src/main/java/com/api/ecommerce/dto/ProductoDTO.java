@@ -1,7 +1,8 @@
 package com.api.ecommerce.dto;
 
-import lombok.Data;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class ProductoDTO {
@@ -10,4 +11,6 @@ public class ProductoDTO {
     private Double precio;
     private String nombreCategoria;
     private List<String> etiquetas;
+    private String talle;
+private Integer stock;
 }
