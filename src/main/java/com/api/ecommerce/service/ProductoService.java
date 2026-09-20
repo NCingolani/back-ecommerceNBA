@@ -22,7 +22,6 @@ public class ProductoService {
     private final CategoriaRepository categoriaRepository;
     private final EtiquetaRepository etiquetaRepository;
 
-    // Se inyectan los repositorios adicionales para manejar las relaciones
     public ProductoService(ProductoRepository productoRepository, 
                            CategoriaRepository categoriaRepository, 
                            EtiquetaRepository etiquetaRepository) {
@@ -36,6 +35,10 @@ public class ProductoService {
         Producto producto = new Producto();
         producto.setNombre(dto.getNombre());
         producto.setPrecio(dto.getPrecio());
+        
+        // Asignación de los nuevos campos
+        producto.setTalle(dto.getTalle());
+        producto.setStock(dto.getStock());
 
         // 1. Buscar o crear la categoría
         if (dto.getNombreCategoria() != null) {
@@ -91,6 +94,10 @@ public class ProductoService {
         dto.setId(producto.getId());
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
+        
+        // Mapeo de vuelta para que se muestren en los GET
+        dto.setTalle(producto.getTalle());
+        dto.setStock(producto.getStock());
         
         if (producto.getCategoria() != null) {
             dto.setNombreCategoria(producto.getCategoria().getNombre());
