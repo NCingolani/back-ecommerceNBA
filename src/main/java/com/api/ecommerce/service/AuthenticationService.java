@@ -1,19 +1,21 @@
 package com.api.ecommerce.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.api.ecommerce.dto.LoginRequest;
 import com.api.ecommerce.dto.RegisterRequest;
 import com.api.ecommerce.model.Role;
 import com.api.ecommerce.model.Usuario;
 import com.api.ecommerce.repository.UsuarioRepository;
 import com.api.ecommerce.security.JwtUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +35,12 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fechaNacimiento(request.getFechaNacimiento())
                 .sexo(request.getSexo())
-                .role(Role.USER)
+                .role(request.getRole() != null ? request.getRole() : Role.USER)
                 .build();
 
         usuarioRepository.save(user);
 
-        // Genera el token JWT para el usuario recién registrado
+        // Genera el token JWT incluyendo el rol del usuario
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         
         Map<String, String> response = new HashMap<>();
@@ -47,7 +49,7 @@ public class AuthenticationService {
     }
 
     public Map<String, String> authenticate(LoginRequest request) {
-        // Verifica si el email y la contraseña son correctos mediante el AuthenticationManager
+        // Verifica credenciales
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -55,11 +57,10 @@ public class AuthenticationService {
                 )
         );
 
-        // Si la validación es correcta, se busca el usuario en la BD
         Usuario user = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        // Se obtienen los roles y se genera el JWT
+        // Genera el JWT incluyendo el rol del usuario autenticado
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 
         Map<String, String> response = new HashMap<>();

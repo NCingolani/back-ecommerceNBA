@@ -1,10 +1,13 @@
 package com.api.ecommerce.dto;
 
+import java.time.LocalDate;
+
+import com.api.ecommerce.model.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -15,7 +18,7 @@ public class RegisterRequest {
     private String apellido;
     private String email;
     private String password;
-    
     private LocalDate fechaNacimiento;
     private String sexo;
+    private Role role;
 }

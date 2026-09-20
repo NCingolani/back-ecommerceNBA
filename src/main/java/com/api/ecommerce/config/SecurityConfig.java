@@ -30,9 +30,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/productos").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").authenticated()
+                // CÓDIGO CORREGIDO
+.requestMatchers(HttpMethod.POST, "/api/productos").hasAuthority("ADMIN")
+.requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ADMIN")
+.requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
