@@ -24,8 +24,10 @@ public class Producto {
     private Long id;
     private String nombre;
     private Double precio;
+    private String descripcion;
+    private String imagen;
     private String talle;
-    private Integer stock; // Usamos Integer para manejar cantidades enteras
+    private Integer stock;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
@@ -35,9 +37,12 @@ public class Producto {
     @JoinTable(name = "producto_etiqueta", joinColumns = @JoinColumn(name = "producto_id"), inverseJoinColumns = @JoinColumn(name = "etiqueta_id"))
     private List<Etiqueta> etiquetas;
 
-    public Producto(String nombre, Double precio, Categoria categoria, List<Etiqueta> etiquetas) {
+    public Producto(String nombre, Double precio, String descripcion, String imagen, Categoria categoria,
+            List<Etiqueta> etiquetas) {
         this.nombre = nombre;
         this.precio = precio;
+        this.descripcion = descripcion;
+        this.imagen = imagen;
         this.categoria = categoria;
         this.etiquetas = etiquetas;
     }
