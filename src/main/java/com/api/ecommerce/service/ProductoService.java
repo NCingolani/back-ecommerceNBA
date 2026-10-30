@@ -22,9 +22,9 @@ public class ProductoService {
     private final CategoriaRepository categoriaRepository;
     private final EtiquetaRepository etiquetaRepository;
 
-    public ProductoService(ProductoRepository productoRepository, 
-                           CategoriaRepository categoriaRepository, 
-                           EtiquetaRepository etiquetaRepository) {
+    public ProductoService(ProductoRepository productoRepository,
+            CategoriaRepository categoriaRepository,
+            EtiquetaRepository etiquetaRepository) {
         this.productoRepository = productoRepository;
         this.categoriaRepository = categoriaRepository;
         this.etiquetaRepository = etiquetaRepository;
@@ -35,8 +35,8 @@ public class ProductoService {
         Producto producto = new Producto();
         producto.setNombre(dto.getNombre());
         producto.setPrecio(dto.getPrecio());
-        
-        // Asignación de los nuevos campos
+
+        producto.setImagen(dto.getImagen());
         producto.setTalle(dto.getTalle());
         producto.setStock(dto.getStock());
 
@@ -62,7 +62,7 @@ public class ProductoService {
 
         // 3. Guardar el producto en la BD
         Producto guardado = productoRepository.save(producto);
-        
+
         // 4. Devolverlo como DTO
         return convertirADTO(guardado);
     }
@@ -94,11 +94,11 @@ public class ProductoService {
         dto.setId(producto.getId());
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
-        
-        // Mapeo de vuelta para que se muestren en los GET
+
+        dto.setImagen(producto.getImagen());
         dto.setTalle(producto.getTalle());
         dto.setStock(producto.getStock());
-        
+
         if (producto.getCategoria() != null) {
             dto.setNombreCategoria(producto.getCategoria().getNombre());
         }
