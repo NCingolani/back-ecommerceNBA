@@ -1,3 +1,4 @@
+
 package com.api.ecommerce.model;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,32 +31,57 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Usuario implements UserDetails {
 
+    // =====================================
+    // IDENTIFICADOR DEL USUARIO
+    // =====================================
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // =====================================
+    // DATOS PERSONALES
+    // =====================================
+
     private String nombre;
+
     private String apellido;
 
     @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
+
     private LocalDate fechaNacimiento;
+
     private String sexo;
+
+    // =====================================
+    // ROL DEL USUARIO
+    // =====================================
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // --- MÉTODOS OBLIGATORIOS DE USERDETAILS ---
+    // =====================================
+    // PERMISOS DE SPRING SECURITY
+    // =====================================
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         if (role == null) {
             return List.of();
         }
-        return List.of(new SimpleGrantedAuthority(role.name()));
+
+        return List.of(
+            new SimpleGrantedAuthority(role.name())
+        );
     }
+
+    // =====================================
+    // AUTENTICACIÓN MEDIANTE EMAIL
+    // =====================================
 
     @Override
     public String getUsername() {
@@ -65,6 +92,10 @@ public class Usuario implements UserDetails {
     public String getPassword() {
         return this.password;
     }
+
+    // =====================================
+    // ESTADO DE LA CUENTA
+    // =====================================
 
     @Override
     public boolean isAccountNonExpired() {

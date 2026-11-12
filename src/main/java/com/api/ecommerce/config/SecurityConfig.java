@@ -1,3 +1,4 @@
+
 package com.api.ecommerce.config;
 
 import java.util.Arrays;
@@ -27,37 +28,194 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final AuthenticationProvider authenticationProvider;
 
+    // =====================================
+    // CONFIGURACIÓN DE SPRING SECURITY
+    // =====================================
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
+
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // CONFIGURACIÓN CORS
+            .cors(cors ->
+                cors.configurationSource(corsConfigurationSource())
+            )
+
+            // API REST CON JWT
             .csrf(csrf -> csrf.disable())
+
+            // PERMISOS DE ACCESO
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // CÓDIGO CORREGIDO
-                .requestMatchers(HttpMethod.POST, "/api/productos").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAuthority("ADMIN")
+
+                // =====================================
+                // AUTENTICACIÓN PÚBLICA
+                // =====================================
+
+                .requestMatchers(
+                    "/api/auth/**"
+                ).permitAll()
+
+                // =====================================
+                // CONSULTAR PRODUCTOS
+                // =====================================
+
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/productos",
+                    "/api/productos/**"
+                ).permitAll()
+
+                // =====================================
+                // VISUALIZAR IMÁGENES
+                // =====================================
+
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/uploads/**"
+                ).permitAll()
+
+                // =====================================
+                // ADMINISTRACIÓN
+                // =====================================
+
+                .requestMatchers(
+                    "/api/admin/**"
+                ).hasAuthority("ADMIN")
+
+                // CREAR PRODUCTOS
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/productos",
+                    "/api/productos/"
+                ).hasAuthority("ADMIN")
+
+                // SUBIR IMÁGENES
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/productos/imagen"
+                ).hasAuthority("ADMIN")
+
+                // MODIFICAR PRODUCTOS
+                .requestMatchers(
+                    HttpMethod.PUT,
+                    "/api/productos/**"
+                ).hasAuthority("ADMIN")
+
+                // ELIMINAR PRODUCTOS
+                .requestMatchers(
+                    HttpMethod.DELETE,
+                    "/api/productos/**"
+                ).hasAuthority("ADMIN")
+
+                // =====================================
+                // COMPRAS DE LOS USUARIOS
+                // =====================================
+
+                // USER Y ADMIN AUTENTICADOS
+                // PUEDEN REGISTRAR UNA COMPRA
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/pedidos",
+                    "/api/pedidos/"
+                ).authenticated()
+
+                // =====================================
+                // HISTORIAL DE COMPRAS DEL USUARIO
+                // =====================================
+
+                // CADA USUARIO PUEDE CONSULTAR
+                // ÚNICAMENTE SUS PROPIOS PEDIDOS
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/pedidos/mis-pedidos",
+                    "/api/pedidos/mis-pedidos/"
+                ).authenticated()
+
+                // =====================================
+                // HISTORIAL GENERAL: SOLO ADMIN
+                // =====================================
+
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/pedidos",
+                    "/api/pedidos/"
+                ).hasAuthority("ADMIN")
+
+                // =====================================
+                // OTRAS PETICIONES
+                // =====================================
+
                 .anyRequest().authenticated()
             )
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            // SESIONES SIN ESTADO
+            .sessionManagement(sess ->
+                sess.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
+            )
+
+            // AUTENTICACIÓN
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+            // VALIDACIÓN DEL JWT
+            .addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
 
+    // =====================================
+    // CONFIGURACIÓN CORS
+    // =====================================
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000", "http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        // FRONTENDS PERMITIDOS
+        configuration.setAllowedOrigins(
+            Arrays.asList(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://localhost:4200"
+            )
+        );
+
+        // MÉTODOS HTTP
+        configuration.setAllowedMethods(
+            Arrays.asList(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+            )
+        );
+
+        // CABECERAS
+        configuration.setAllowedHeaders(
+            Arrays.asList(
+                "Authorization",
+                "Content-Type"
+            )
+        );
+
         configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+            "/**",
+            configuration
+        );
+
         return source;
     }
 }
