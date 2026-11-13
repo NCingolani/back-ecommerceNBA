@@ -1,4 +1,3 @@
-
 services:
 
   db:
@@ -30,6 +29,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/nba_ecommerce?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: nba_user
       SPRING_DATASOURCE_PASSWORD: nba_password
+      # Fuerza 'update' siempre y evita que se borre la base de datos al reiniciar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
       # Carpeta donde Spring Boot guarda las imágenes
       APP_UPLOAD_DIR: /app/uploads

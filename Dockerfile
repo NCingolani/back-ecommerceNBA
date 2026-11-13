@@ -1,11 +1,13 @@
-# Usamos una imagen oficial de Java 17
-FROM eclipse-temurin:17-jdk-alpine
-
+# Etapa 1: Compilar el código Java dentro de Docker (sin depender de Windows)
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn package -DskipTests
 
-# Copiamos el archivo compilado (JAR) desde la carpeta target
-COPY target/ecommerce-0.0.1-SNAPSHOT.jar app.jar
-
+# Etapa 2: Ejecutar la aplicación
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
