@@ -1,7 +1,7 @@
-
 package com.api.ecommerce.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "detalle_pedido")
@@ -13,6 +13,7 @@ public class DetallePedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
